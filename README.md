@@ -1,37 +1,57 @@
-Gauge Driver
-============
+OpenXC Retro Gauge
+=========================
+
+The Retro Gauge is a mechanical vehicle gauge that displays data received over a
+serial communication line. One possible use of the gauge is to display vehicle
+data from the [OpenXC platform][openxc].
+
+The design intent was to keep the gauge
+as open and accessible as possible so that the community could contribute and
+benefit from the design.
+
+For more details on the project, visit the [project page on the OpenXC
+website](http://openxcplatform.com/hardware-addons/retro-gauge.html).
+
+For an instructional lab on how to build the gauge, see the [Retro Gauge
+Lab](http://retro-gauge-lab.openxcplatform.com/).
+
+## Retro Gauge Android Driver App
 
 The Gauge Driver is the Android side of the RetroGauge. It supplies the gauge
 with a rounded two digit data value, percent (derived from previously set
 bounds), and color data.
 
-## Dependencies
+**Dependencies**
 
-**OpenXC Libraries**
-
-The OpenXC library
+The Open XC library
 [documentation](http://openxcplatform.com/android/api-guide.html) guide you with
 installing this library. The source code also includes example code and
 additional documentation in the README file.
 
-### FT Driver
-
-The Gauge Driver also requires [our fork of
-FTDriver](https://github.com/openxc/FTDriver) on the `next` branch. Download
-this library and import it into the same Eclipse workspace as the Gauge project
-to fix compile errors.
+The Gauge Driver also requires the [FTDriver by
+ksksue](https://github.com/ksksue/FTDriver). Download this library and import it
+into the same Eclipse workspace as the Gauge project to fix compile errors.
 
 If there are still errors, go to the `Android` properties for the
 `GaugeDriverActivity` project and manually re-link the `openxc` and `FTDriver`
 libraries at the bottom of the window.
 
-## Connections
+### Connections
 
 The Gauge Driver connects to the CAN Translator via USB. This connection is
 controlled via the OpenXC Vehicle Interface. It connects to the Retro Gauge via
 USB controlled by FTDriver, a serial connection emulator.
 
-## Operation
+### Data Format
+
+The Retro Gauge can receive two types of data packet.
+
+* Color data is delivered with three digits within angle brackets. `<###>`
+  Valid values are between 0 and 259.
+* Value data is delivered with two digits each of value, and percentage. The
+  numbers are separated by a comma, and enclosed in parentheses. `(vv,pp)`
+
+### Operation
 
 After startup, the user has the following options:
 
@@ -56,9 +76,9 @@ After startup, the user has the following options:
 * Manual Data Entry - This is a debugging tool. Text entered in the text box is
   sent to the Retro Gauge when the Send button is tapped.
 
-## Under the Hood
+### Under the Hood
 
-### FTDriver
+**FTDriver**
 
 In the Gauge Driver, this is set up in OnCreate only if the app is not returning
 from running in the background. Vendor and product IDs do not need to be set,
@@ -76,7 +96,7 @@ denial of permission to use the port.
 
 Once we've successfully started the port, we start updates with onTimerToggle().
 
-### Timer
+**Timer**
 
 The duration of the timer is hard coded as `mTimerPeriod`.
 
@@ -92,7 +112,7 @@ parameters, and sends the value and percentage to the virtual serial port.
 If the user has selected that the color of the gauge should be controlled by the
 data, the color is calculated and sent to the gauge in this method as well.
 
-### Data Sources
+**Data Sources**
 
 The Gauge Driver is set up to use three data sources. The vehicle speed,
 mileage, and the steering wheel angle. When the user selects a data source,
@@ -100,3 +120,29 @@ mileage, and the steering wheel angle. When the user selects a data source,
 use via the `mUsedData` variable. `mGaugeMin` and `mGaugeRange` are also set.
 These as used for the computation of a percentage. All this happens in the
 button handler for each data set.
+
+## Resources
+
+This repository is one of 4 repositories listed below:
+
+**Mechanical Enclosure Design** - The
+[retro-gauge-enclosure](http://github.com/openxc-retro-gauge/retro-gauge-enclosure)
+repository contains .STL and STEP files for the 3D printable gauge housing.
+
+**Hardware** - The
+[retro-gauge-hardware](http://github.com/openxc-retro-gauge/retro-gauge-hardware)
+repository contains Eagle schematics and PCB layouts for the gauge's embedded
+hardware.
+
+**Firmware** - The
+[retro-gauge-firmware](http://github.com/openxc-retro-gauge/retro-gauge-firmware)
+repository contains Arduino source code to run on the Retro Gauge.
+
+**Android** - The
+[retro-gauge-android](http://github.com/openxc-retro-gauge/retro-gauge-android)
+repository contains an Android application to control the gauge with vehicle
+data from the [OpenXC platform][openxc].
+
+## License
+
+The firmware source code is available under the BSD open source license.
