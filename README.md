@@ -10,7 +10,7 @@ as open and accessible as possible so that the community could contribute and
 benefit from the design.
 
 For more details on the project, visit the [project page on the OpenXC
-website](http://openxcplatform.com/hardware-addons/retro-gauge.html).
+website](http://openxcplatform.com/projects/retro-gauge.html).
 
 For an instructional lab on how to build the gauge, see the [Retro Gauge
 Lab](http://retro-gauge-lab.openxcplatform.com/).
@@ -146,3 +146,5 @@ data from the [OpenXC platform][openxc].
 ## License
 
 The firmware source code is available under the BSD open source license.
+
+[openxc]: http://openxcplatform.com
