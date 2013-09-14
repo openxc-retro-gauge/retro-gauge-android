@@ -56,6 +56,7 @@ public class GaugeDriverActivity extends Activity {
     private double mGaugeMin = 0;
     private double mGaugeRange = 80;
 
+    private int mLastGaugeValue = -1;;
     private Timer mReceiveTimer;
     private boolean mColorToValue;
     private CheckBox mColorCheckBox;
@@ -123,7 +124,7 @@ public class GaugeDriverActivity extends Activity {
     public void onResume() {
         super.onResume();
         connectToDevice();
-        
+
         ToggleButton mToggleButton = (ToggleButton) findViewById
                 (R.id.toggleButtonTimer);
         if(mReceiveTimer != null)  {  //If the timer is running
@@ -266,8 +267,7 @@ public class GaugeDriverActivity extends Activity {
 
             if(thisColor != mLastColor) {
                 mLastColor = thisColor;
-                String colorPacket = "<" +
-                    String.format("%03d", thisColor) +">";
+                String colorPacket = "<" + String.format("%03d", thisColor) +">";
                 writeStringToSerial(colorPacket);
 
                 runOnUiThread(new Runnable() {
@@ -284,9 +284,15 @@ public class GaugeDriverActivity extends Activity {
         value = Math.min(value, 99);
         value = Math.max(value, 0);
 
-        String dataPacket = "(" + String.format("%02d", (int)value) + "|" +
-            String.format("%02d", (int)(100 * percent)) + ")";
-        writeStringToSerial(dataPacket);
+        // TODO hacky solution to slow down the data rate - increasing the baud
+        // from 9600 to 115200 fixed it, but we're really sending way more data
+        // than we need to be
+        if((int)value != mLastGaugeValue) {
+            String dataPacket = "(" + String.format("%02d", (int)value) + "," +
+                String.format("%02d", (int)(100 * percent)) + ")";
+            writeStringToSerial(dataPacket);
+            mLastGaugeValue = (int)value;
+        }
     }
 
 
@@ -321,7 +327,7 @@ public class GaugeDriverActivity extends Activity {
             return;
         }
 
-        mSerialPort.begin(9600);
+        mSerialPort.begin(115200);
         if(!mSerialPort.isConnected()) {
             Log.d(TAG, "mSerialPort.begin() failed.");
         } else {
@@ -337,7 +343,7 @@ public class GaugeDriverActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if(UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action) && 
+            if(UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action) &&
                     mSerialPort.isConnected()) {
                 mSerialPort.usbDetached(intent);
                 if(!mSerialPort.isConnected()) {
@@ -446,6 +452,7 @@ public class GaugeDriverActivity extends Activity {
     };
 
     private void writeStringToSerial(String outString){
+        Log.d(TAG, "Writing to serial: " + outString);
         if(mSerialPort.isConnected()) {
             char[] outMessage = outString.toCharArray();
             byte outBuffer[] = new byte[128];
@@ -460,7 +467,7 @@ public class GaugeDriverActivity extends Activity {
             }
         }
     }
-    
+
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
