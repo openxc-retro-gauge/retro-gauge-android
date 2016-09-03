@@ -3,7 +3,7 @@ OpenXC Retro Gauge
 
 The Retro Gauge is a mechanical vehicle gauge that displays data received over a
 serial communication line. One possible use of the gauge is to display vehicle
-data from the [OpenXC platform][openxc].
+data from the [OpenXC Platform][openxc].
 
 The design intent was to keep the gauge
 as open and accessible as possible so that the community could contribute and
@@ -17,30 +17,27 @@ Lab](http://retro-gauge-lab.openxcplatform.com/).
 
 ## Retro Gauge Android Driver App
 
-The Gauge Driver is the Android side of the RetroGauge. It supplies the gauge
+The Gauge Driver is the Android side of the Retro Gauge. It supplies the gauge
 with a rounded two digit data value, percent (derived from previously set
 bounds), and color data.
 
-**Dependencies**
+### Dependencies
 
-The Open XC library
-[documentation](http://openxcplatform.com/android/api-guide.html) guide you with
-installing this library. The source code also includes example code and
-additional documentation in the README file.
+This Android app uses the OpenXC library. The
+[documentation](http://openxcplatform.com/android/api-guide.html) provides
+instructions for how to use the library, but it is automatically included in
+the GaugeDriver dependencies. Check the app's `build.gradle` file. 
 
 The Gauge Driver also requires the [FTDriver by
-ksksue](https://github.com/ksksue/FTDriver). Download this library and import it
-into the same Eclipse workspace as the Gauge project to fix compile errors.
-
-If there are still errors, go to the `Android` properties for the
-`GaugeDriverActivity` project and manually re-link the `openxc` and `FTDriver`
-libraries at the bottom of the window.
+ksksue](https://github.com/openxc/FTDriver). This dependecy is also 
+automatically included in the `build.gradle` file and is made available by an 
+Android package manager called `Jitpack`. 
 
 ### Connections
 
-The Gauge Driver connects to the CAN Translator via USB. This connection is
-controlled via the OpenXC Vehicle Interface. It connects to the Retro Gauge via
-USB controlled by FTDriver, a serial connection emulator.
+The Gauge Driver connects to the [OpenXC Vehicle Interface](http://openxcplatform.com/vehicle-interface/hardware.html#obtaining-a-vehicle-interface)
+via Bluetooth to get access to vehicle data. The Gauge Driver connects to the 
+Retro Gauge hardware via USB controlled by FTDriver, a serial connection library.
 
 ### Data Format
 
@@ -48,8 +45,8 @@ The Retro Gauge can receive two types of data packet.
 
 * Color data is delivered with three digits within angle brackets. `<###>`
   Valid values are between 0 and 259.
-* Value data is delivered with two digits each of value, and percentage. The
-  numbers are separated by a comma, and enclosed in parentheses. `(vv,pp)`
+* Value data is delivered with two digits each of value and percentage. The
+  numbers are separated by a comma and enclosed in parentheses. `(vv,pp)`
 
 ### Operation
 
@@ -80,7 +77,8 @@ After startup, the user has the following options:
 
 **FTDriver**
 
-In the Gauge Driver, this is set up in OnCreate only if the app is not returning
+In the Gauge Driver, the serial connection to the Retro Gauge is set up in 
+the `OnCreate` function only if the app is not returning
 from running in the background. Vendor and product IDs do not need to be set,
 they are hard coded in the FTDriver code to connect to the FTDI chip.
 
@@ -94,16 +92,17 @@ yet granted permission, the start fails.
 Down in the definition of `mBroadcastReceiver`, we handle the user's granting or
 denial of permission to use the port.
 
-Once we've successfully started the port, we start updates with onTimerToggle().
+Once we've successfully started the port, we start updates with 
+`onTimerToggle()`.
 
 **Timer**
 
 The duration of the timer is hard coded as `mTimerPeriod`.
 
 The timer created is `mReceiveTimer`. It is created as `null` and when it is
-stopped with onTimerToggle, it is set to null again. It can therefore be used to
-determine whether or not it's currently running. If it's `null`, it's not
-running.
+stopped with `onTimerToggle`, it is set to `null` again. It can therefore be 
+used to determine whether or not it's currently running. If it's `null`, it's 
+not running.
 
 The timer task, `ReceiveTimerMethod`, polls incoming data,
 converts/scales/rounds the data as needed, calculates a percentage on hard coded
@@ -114,8 +113,8 @@ data, the color is calculated and sent to the gauge in this method as well.
 
 **Data Sources**
 
-The Gauge Driver is set up to use three data sources. The vehicle speed,
-mileage, and the steering wheel angle. When the user selects a data source,
+The Gauge Driver is set up to use three data sources: `vehicle_speed`,
+`odometer`, and `steering_wheel_angle`. When the user selects a data source,
 `mDataUsed` is set. `ReceiveTimerMethod` determines which data and parameters to
 use via the `mUsedData` variable. `mGaugeMin` and `mGaugeRange` are also set.
 These as used for the computation of a percentage. All this happens in the
@@ -141,7 +140,7 @@ repository contains Arduino source code to run on the Retro Gauge.
 **Android** - The
 [retro-gauge-android](http://github.com/openxc-retro-gauge/retro-gauge-android)
 repository contains an Android application to control the gauge with vehicle
-data from the [OpenXC platform][openxc].
+data from the [OpenXC Platform][openxc].
 
 ## License
 
