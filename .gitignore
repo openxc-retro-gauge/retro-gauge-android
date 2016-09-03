@@ -1,10 +1,31 @@
-.settings
-target
-bin
-gen
 .DS_Store
-reference
-*.asc
+*~
+*.bak
+
+# java
+*.class
+
+# android
+*.dex
+*.ap_
+R.java
+*.cache
+
+# Gradle files
+.gradle/
+build/
+*/app/build/
 .settings
 .project
 .classpath
+
+# Built application files
+*.apk
+*.ap_
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log Files
+*.log
+
