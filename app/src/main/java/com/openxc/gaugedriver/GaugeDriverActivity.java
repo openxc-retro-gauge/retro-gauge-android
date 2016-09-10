@@ -1,11 +1,5 @@
 package com.openxc.gaugedriver;
 
-import java.lang.reflect.Method;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import jp.ksksue.driver.serial.FTDriver;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -33,7 +27,12 @@ import com.openxc.measurements.Odometer;
 import com.openxc.measurements.SteeringWheelAngle;
 import com.openxc.measurements.UnrecognizedMeasurementTypeException;
 import com.openxc.measurements.VehicleSpeed;
-import com.openxc.remote.VehicleServiceException;
+
+import java.lang.reflect.Method;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import jp.ksksue.driver.serial.FTDriver;
 
 public class GaugeDriverActivity extends Activity {
     private final String TAG = "GaugeDriver";
@@ -429,16 +428,8 @@ public class GaugeDriverActivity extends Activity {
             mVehicleManager = ((VehicleManager.VehicleBinder)service
                     ).getService();
 
-            try {
-                mVehicleManager.addListener(FuelConsumed.class,
-                        mFuelConsumedListener);
-                mVehicleManager.addListener(Odometer.class,
-                        mFineOdometerListener);
-            } catch(VehicleServiceException e) {
-                Log.w(TAG, "Couldn't add listeners for measurements", e);
-            } catch(UnrecognizedMeasurementTypeException e) {
-                Log.w(TAG, "Couldn't add listeners for measurements", e);
-            }
+            mVehicleManager.addListener(FuelConsumed.class, mFuelConsumedListener);
+            mVehicleManager.addListener(Odometer.class, mFineOdometerListener);
 
             configureTimer(false);
             configureTimer(true);
