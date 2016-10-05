@@ -50,7 +50,7 @@ public class GaugeDriverActivity extends Activity {
     private UsbManager mUsbManager;
     private FTDriver mSerialPort;
 
-    private Class<? extends Measurement> mActiveDataType;
+    private Class<? extends Measurement> mActiveDataType = VehicleSpeed.class;
 
     private double mGaugeMin = 0;
     private double mGaugeRange = 80;
